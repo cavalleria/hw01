@@ -2,7 +2,7 @@
 
 mkdir -p build
 pushd build
-cmake -DCMAKE_BUILD_TYPE=Debug HW_TEST ..
+cmake -DCMAKE_BUILD_TYPE=Debug ..
 make -j4
 make install
 popd

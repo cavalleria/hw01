@@ -12,4 +12,5 @@ void test_rainbow() {
         }
     }
     stbi_write_png("rainbow.png", 512, 512, 3, buf.data(), 0);
+
 }

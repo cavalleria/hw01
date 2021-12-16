@@ -1,36 +1,33 @@
 language: cpp
 
-addons:
-  apt:
-    paclages:
-      - lcov
-      - googletest
-      - libgtest-dev
+git:
+  depth: 3
+  quiet: true
 
-matrix:
+branches:
+  only:
+    - main
+
+jobs:
   include:
-    - os: osx
-      osx_image: xcode11.2
-      compiler: clang
-      name: "macOS-clang"
-      env:
-        - BUILD="mkdir -p build && cd build  && cmake .. && make -j2 && ctest --output-on-failure -j 2"
-
-    - os: linux   
-      dist: bionic
+    - name: "linux-gcc"
+      os: linux
+      arch: arm64
+      dist: focal
       compiler: gcc
-      name: "linux-gcc"
+      before_install:
+        - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+        - sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
+        - sudo apt-get update
+        - sudo apt-get install cmake
+        - sudo apt-get install lcov googletest libgtest-dev 
       env:
-        - BUILD="mkdir -p build && cd build  && cmake .. && make -j2 && ctest --output-on-failure -j 2"
-      
-before_install:
-  - eval "${BEFORE_BUILD}"
+        - BUILD="mkdir -p build && cd build && cmake --version && cmake .. && cmake --build . && ctest --output-on-failure -j 2"
 
 script:
   - eval "${BUILD}"
 
-
-after_sucess:
+after_success:
   - lcov --capture --directory . --output-file coverage.info
   - locv --remove coverage.info '/usr/*' --output-file coverage.info
   - locv --list coverage.info

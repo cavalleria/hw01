@@ -1,0 +1,50 @@
+language: cpp
+
+os: linux
+
+dist: focal
+
+branches:
+  only:
+    - main
+
+addons:
+  apt:
+    paclages:
+      - lcov
+      - googletest
+      - libgtest-dev
+
+  snaps:
+    - name: cmake --classic
+
+
+jobs:
+  include:
+    - name: "linux-gcc-amd64"
+      os: linux
+      arch: amd64
+      dist: focal
+      compiler: gcc
+      env:
+        - NAME=linux-gcc
+        - PATH=/snap/cmake/current/bin:$PATH
+        - BUILD="mkdir -p build && cd build && cmake --version && cmake .. && cmake --build . && ctest --output-on-failure -j2"
+
+before_install:
+  - eval "${BEFORE_BUILD}"
+
+script:
+  - eval "${BUILD}"
+
+
+after_sucess:
+  - lcov --capture --directory . --output-file coverage.info
+  - locv --remove coverage.info '/usr/*' --output-file coverage.info
+  - locv --list coverage.info
+  - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+
+
+notifications:
+  email:
+    - cavallyb@gmail.com

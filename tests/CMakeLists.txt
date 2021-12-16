@@ -9,3 +9,4 @@ macro(hw_add_test name)
 endmacro()
 
 hw_add_test(rainbow)
+hw_add_test(mandel)

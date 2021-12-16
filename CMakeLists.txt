@@ -15,8 +15,10 @@ endif()
 
 project(hw)
 
+set(CMAKE_CXX_STANDARD 11)
+
 option(HW_TEST "Build unit tests?" ON)
-option(HW_COVERAGE "Build unit coverage?" OFF)
+option(HW_COVERAGE "Build unit coverage?" ON)
 
 add_subdirectory(stbiw)
 
@@ -35,9 +37,14 @@ target_include_directories(
     ${HW_SRCS} stbiw/include
 )
 
-add_subdirectory(example)
+if(HW_COVERAGE)
+    target_compile_options(${PROJECT_NAME} PUBLIC -coverage -fprofile-arcs -ftest-coverage)
+    target_link_libraries(${PROJECT_NAME} PUBLIC -coverage)
+endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/summary.cmake")
+
+add_subdirectory(example)
 
 install(
     TARGETS ${PROJECT_NAME}

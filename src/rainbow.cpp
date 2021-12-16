@@ -2,7 +2,7 @@
 #include <stb_image_write.h>
 #include <vector>
 
-void test_rainbow() {
+int test_rainbow() {
     std::vector<char> buf(512 * 512 * 3);
     for (int j = 0; j < 512; j++) {
         for (int i = 0; i < 512; i++) {
@@ -11,6 +11,5 @@ void test_rainbow() {
             buf[(j * 512 + i) * 3 + 2] = 0;
         }
     }
-    stbi_write_png("rainbow.png", 512, 512, 3, buf.data(), 0);
-
+    return stbi_write_png("rainbow.png", 512, 512, 3, buf.data(), 0);
 }

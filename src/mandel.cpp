@@ -3,7 +3,7 @@
 #include <vector>
 #include <complex>
 
-void test_mandel() {
+int test_mandel() {
     std::vector<char> buf(512 * 512);
     for (int j = 0; j < 512; j++) {
         for (int i = 0; i < 512; i++) {
@@ -20,5 +20,5 @@ void test_mandel() {
             }
         }
     }
-    stbi_write_png("mandel.png", 512, 512, 1, buf.data(), 0);
+    return stbi_write_png("mandel.png", 512, 512, 1, buf.data(), 0);
 }

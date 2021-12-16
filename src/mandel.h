@@ -1,3 +1,3 @@
 #pragma once
 
-void test_mandel();
+int test_mandel();

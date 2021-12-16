@@ -1,13 +1,5 @@
 language: cpp
 
-os: linux
-
-dist: focal
-
-branches:
-  only:
-    - main
-
 addons:
   apt:
     paclages:
@@ -15,22 +7,22 @@ addons:
       - googletest
       - libgtest-dev
 
-  snaps:
-    - name: cmake --classic
-
-
-jobs:
+matrix:
   include:
-    - name: "linux-gcc-amd64"
-      os: linux
-      arch: amd64
-      dist: focal
-      compiler: gcc
+    - os: osx
+      osx_image: xcode11.2
+      compiler: clang
+      name: "macOS-clang"
       env:
-        - NAME=linux-gcc
-        - PATH=/snap/cmake/current/bin:$PATH
-        - BUILD="mkdir -p build && cd build && cmake --version && cmake .. && cmake --build . && ctest --output-on-failure -j2"
+        - BUILD="mkdir -p build && cd build  && cmake .. && make -j2 && ctest --output-on-failure -j 2"
 
+    - os: linux   
+      dist: bionic
+      compiler: gcc
+      name: "linux-gcc"
+      env:
+        - BUILD="mkdir -p build && cd build  && cmake .. && make -j2 && ctest --output-on-failure -j 2"
+      
 before_install:
   - eval "${BEFORE_BUILD}"
 
